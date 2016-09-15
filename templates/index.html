@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Model Interface</title>
+        <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>        
+
+        <script type="text/javascript">
+          var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+          console.log($SCRIPT_ROOT);
+        </script>
+
+    </head>
+    <body>
+
+      <div class="form-group">
+        <div id = "input_form">
+
+          {% for arg in arguments %}
+          <div class="col-xs-12" style="padding:5px;">
+              <div class="row">
+                  <div class="col-md-6 col-xs-6">
+                      <div class="row">
+                          <section class="col-md-4 col-xs-4">
+                              <label class="control-label" style="float:right;">
+                                  {{ arg['prompt']}}
+                              </label>
+                          </section>
+                          <aside class="col-md-4 col-xs-4">
+                              <input type="text" id="{{ arg['id'] }}"></input>
+                          </aside>
+                      </div>
+                  </div>
+              </div>
+          </div> 
+          {% endfor %}
+
+          <div class="col-xs-12" style="padding:5px;">
+              <div class="row">
+                  <div class="col-md-6 col-xs-6">
+                      <div class="row">
+                          <section class="col-md-4 col-xs-4">
+                              <label id="submit_response" class="control-label" style="float:right;"></label>
+                          </section>
+                           <aside class="col-md-4 col-xs-4">
+                              <button id="submit_button" type="submit"  class="btn btn-primary" value="submit">submit</button>
+                          </aside>
+                      </div>
+                  </div>
+              </div>
+          </div>        
+
+        </div>
+      </div>
+
+      <script>
+        $('#submit_button').click(function() {
+            $('#submit_response').html('Loading...')
+            $.getJSON($SCRIPT_ROOT + '/response', {
+                {% for arg in arguments %}
+                  {{ arg['id'] }}: $("#{{ arg['id'] }}").val(),
+                {% endfor %}
+                }, function(data) {
+                  $('#submit_response').html(data.result)
+                }
+            )
+        });
+      </script>
+      
+    </body>
+</html>

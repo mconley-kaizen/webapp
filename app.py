@@ -15,7 +15,7 @@ def response():
     try:
         data = {key: float(args[key]) if args[key] else False for key in args}
         if all(data.values()):
-            result = mymodel.main(**data)
+            result = mymethod(**data)
         else:
             result = 'Enter data!'
     except Exception as e:
@@ -34,7 +34,9 @@ def parse_args(function):
 if __name__ == "__main__":
     port = int(sys.argv[1])
     package = sys.argv[2]
+    method_name = sys.argv[3]
 
     mymodel = importlib.import_module(package)
+    mymethod = getattr(mymodel, method_name)
 
     app.run(host='0.0.0.0', port=port)

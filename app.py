@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    args = parse_args(mymodel.main)
+    args = parse_args(mymethod)
     return render_template('index.html', arguments=args)
 
 @app.route('/response', methods=['GET', 'POST'])
